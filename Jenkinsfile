@@ -53,7 +53,7 @@ pipeline {
             steps {
                 script {
                     withDockerRegistry(credentialsId: 'Docker', toolName: 'docker'){
-                        sh "docker build --build-arg TMDB_V3_API_KEY=XXXXXXXXXXXXXXXXXXXXXX -t netflix-clone-cicd ."
+                        sh "docker build --build-arg TMDB_V3_API_KEY=733de66f2f8ebf885ea8575cdbf3d8cd -t netflix-clone-cicd ."
                         sh "docker tag netflix-clone-cicd mitchxxx/netflix-clone-cicd:latest "
                         sh "docker push mitchxxx/netflix-clone-cicd:latest "
                     }
@@ -68,6 +68,18 @@ pipeline {
         stage('Deploy to container'){
             steps{
                 sh 'docker run -d --name netflix-clone-cicd -p 8081:80 mitchxxx/netflix-clone-cicd:latest'
+            }
+        }
+        stage('Deploy to Kubernetes'){
+            steps{
+                script{
+                    dir('Kubernetes') {
+                       withKubeConfig(caCertificate: '', clusterName: '', contextName: '', credentialsId: 'k8s', namespace: '', restrictKubeConfigAccess: false, serverUrl: ''){
+                            sh "kubectl apply -f deployment.yml"
+                            sh "kubectl apply -f service.yml"
+                        }
+                    }
+                }
             }
         }
 
