@@ -53,7 +53,7 @@ pipeline {
             steps {
                 script {
                     withDockerRegistry(credentialsId: 'Docker', toolName: 'docker'){
-                        sh "docker build --build-arg TMDB_V3_API_KEY=733de66f2f8ebf885ea8575cdbf3d8cd -t netflix-clone-cicd ."
+                        sh "docker build --build-arg TMDB_V3_API_KEY=API-KEY -t netflix-clone-cicd ."
                         sh "docker tag netflix-clone-cicd mitchxxx/netflix-clone-cicd:latest "
                         sh "docker push mitchxxx/netflix-clone-cicd:latest "
                     }
